@@ -45,9 +45,23 @@ public class MainActivity extends Activity implements TaskListener{
         et_password = (EditText) findViewById(R.id.et_password);
 	}
     
-    public void onTaskCompleted(QueryType queryType, Cursor cursor) {
+    public void onTaskCompleted(QueryType queryType, Object result) {
 		Log.e("query_type", queryType.name()+" "+queryType.value);
-		readData(cursor);
+		
+		switch (queryType) {
+		case INSERT:
+			Log.d("INSERT", "row ID of the newly inserted row = "+(Long)result+"");
+			break;
+		case UPDATE:
+			Log.d("UPDATE", "the number of rows affected = "+(Integer)result+"");
+			break;
+		case DELETE:
+			Log.d("DELETE", "the number of rows affected if a whereClause is passed in, 0 otherwise. To remove all rows and get a count pass \"1\" as the whereClause.  = "+(Integer)result+"");
+			break;
+		case SELECT:
+			readData((Cursor)result);
+			break;
+		}
 	}
     
     public void MyOnClick(View view) {

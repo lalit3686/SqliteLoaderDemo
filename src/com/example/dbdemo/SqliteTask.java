@@ -2,7 +2,6 @@ package com.example.dbdemo;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 /**
@@ -14,7 +13,7 @@ import android.os.AsyncTask;
  * public SqliteTask(Activity mActivity, String table, SQLiteDatabase db, ContentValues values, String where, String[] whereArgs)
  * 
  **/
-public class SqliteTask extends AsyncTask<QueryType, Void, Cursor>{
+public class SqliteTask extends AsyncTask<QueryType, Void, Object>{
 
 	private TaskListener mTaskListener;
 	private SQLiteDatabase db;
@@ -32,29 +31,23 @@ public class SqliteTask extends AsyncTask<QueryType, Void, Cursor>{
 		this.whereArgs = whereArgs;
 	}
 	@Override
-	protected Cursor doInBackground(QueryType... params) {
+	protected Object doInBackground(QueryType... params) {
 		queryType = params[0];
-		Cursor cursor;
 		
 		switch (queryType) {
 		case INSERT:
-			db.insert(table, null, values);	
-			break;
+			return db.insert(table, null, values);	
 		case UPDATE:
-			db.update(table, values, where, whereArgs);
-			break;
+			return db.update(table, values, where, whereArgs);
 		case DELETE:
-			db.delete(table, where, whereArgs);
-			break;
+			return db.delete(table, where, whereArgs);
 		case SELECT:
-			cursor = db.query(table, null, where, whereArgs, null, null, null);
-			return cursor;
+			return db.query(table, null, where, whereArgs, null, null, null);
 		}
-		cursor = db.query(table, null, null, null, null, null, null);
-		return cursor;
+		return db.query(table, null, null, null, null, null, null);
 	}
 	@Override
-	protected void onPostExecute(Cursor result) {
+	protected void onPostExecute(Object result) {
 		mTaskListener.onTaskCompleted(queryType, result);
 		db.close();
 	}
